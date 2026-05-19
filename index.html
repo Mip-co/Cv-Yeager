@@ -596,6 +596,104 @@
     background: linear-gradient(to right, transparent, var(--border), transparent);
   }
 
+  /* ========================= */
+/* LOADER */
+/* ========================= */
+
+#loader{
+  position: fixed;
+  inset: 0;
+
+  background:
+    radial-gradient(circle at center, rgba(192,57,43,0.08), transparent 60%),
+    #080a0e;
+
+  z-index: 999999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+    padding: 20px;
+
+  transition:
+    opacity 1s ease,
+    visibility 1s ease;
+}
+
+.loader-content{
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-content h1{
+  font-family: 'Cinzel', serif;
+
+  font-size: clamp(42px, 7vw, 82px);
+
+  color: var(--text);
+
+  letter-spacing: 8px;
+
+  margin-bottom: 20px;
+}
+
+.loader-content p{
+  font-family: 'Share Tech Mono', monospace;
+
+  font-size: 11px;
+  letter-spacing: 4px;
+
+  text-transform: uppercase;
+
+  color: var(--gold);
+
+  margin-bottom: 30px;
+}
+
+.loading-bar{
+  width: 300px;
+  max-width: 80vw;
+
+  height: 3px;
+
+  background: rgba(255,255,255,0.08);
+
+  overflow: hidden;
+
+  position: relative;
+}
+
+.loading-fill{
+  width: 0%;
+  height: 100%;
+
+  background:
+    linear-gradient(
+      to right,
+      var(--red),
+      var(--gold)
+    );
+
+  animation:
+    rumblingLoad 3s ease forwards;
+}
+
+@keyframes rumblingLoad{
+
+  from{
+    width: 0%;
+  }
+
+  to{
+    width: 100%;
+  }
+
+}
   /* RESPONSIVE */
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
@@ -613,6 +711,23 @@
 </style>
 </head>
 <body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-content">
+
+    <h1>Bentar Lagi Rumbling</h1>
+
+    <p id="loadingText">
+      Initializing Rumbling...
+    </p>
+
+    <div class="loading-bar">
+      <div class="loading-fill"></div>
+    </div>
+
+  </div>
+</div>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
@@ -909,6 +1024,48 @@ reveals.forEach(el => observer.observe(el));
 document.querySelectorAll('.exp-list .exp-item, .cert-grid .cert-card, .edu-item').forEach((el, i) => {
   el.style.transitionDelay = (i * 0.1) + 's';
 });
+
+// =========================
+// LOADER
+// =========================
+
+window.addEventListener('load', () => {
+
+  const loader = document.getElementById('loader');
+
+  const texts = [
+    "Initializing Rumbling...",
+    "Contacting Founding Titan...",
+    "Preparing Wall Titans...",
+    "Humanity.exe has stopped working"
+  ];
+
+  let index = 0;
+
+  const loadingText = document.getElementById('loadingText');
+
+  const interval = setInterval(() => {
+
+    index++;
+
+    if(index < texts.length){
+      loadingText.textContent = texts[index];
+    }
+
+  }, 700);
+
+  setTimeout(() => {
+
+    clearInterval(interval);
+
+    loader.style.opacity = '0';
+    loader.style.visibility = 'hidden';
+
+  }, 3200);
+
+});
+
+
 </script>
 </body>
 </html>
