@@ -416,11 +416,19 @@
   }
   .skill-fill {
     height: 100%;
-    background: linear-gradient(to right, var(--red), var(--gold));
-    transform: scaleX(0); transform-origin: left;
-    transition: transform 1.2s cubic-bezier(0.16,1,0.3,1);
+
+    background:
+      linear-gradient(
+        to right,
+        var(--red),
+        var(--gold)
+      );
+
+    width: 0%;
+
+    transition:
+      width 1.2s cubic-bezier(0.16,1,0.3,1);
   }
-  .skill-fill.animated { transform: scaleX(1); }
 
   .lang-list { display: flex; flex-direction: column; gap: 14px; }
   .lang-item {
@@ -476,47 +484,235 @@
   }
 
   /* CERTIFICATIONS */
-  #certs { background: var(--surface); }
-  .cert-grid {
-    display: grid; grid-template-columns: repeat(3,1fr);
-    gap: 24px;
-  }
-  .cert-card {
-    padding: 28px;
-    border: 1px solid var(--border);
-    position: relative; overflow: hidden;
-    transition: transform 0.3s, border-color 0.3s;
-    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
-  }
-  .cert-card::before {
-    content: '';
-    position: absolute; top:0; left:0; right:0;
-    height: 2px;
-    background: linear-gradient(to right, var(--red), var(--gold));
-  }
-  .cert-card::after {
-    content: '';
-    position: absolute; inset:0; z-index:-1;
-    background: radial-gradient(ellipse at top, rgba(192,57,43,0.06), transparent 70%);
-    opacity: 0; transition: opacity 0.3s;
-  }
-  .cert-card:hover { transform: translateY(-6px); border-color: var(--gold); }
-  .cert-card:hover::after { opacity: 1; }
-  .cert-icon {
-    font-size: 28px; margin-bottom: 16px;
-  }
-  .cert-title {
-    font-family: 'Cinzel', serif;
-    font-size: 13px; line-height: 1.5;
-    color: var(--text);
-  }
-  .cert-badge {
-    display: inline-block; margin-top: 12px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px; letter-spacing: 2px;
-    color: var(--gold); text-transform: uppercase;
-    border: 1px solid var(--gold); padding: 3px 8px;
-  }
+ #certs { 
+  background: var(--surface); 
+}
+
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+
+  gap: 24px;
+
+  align-items: start;
+}
+
+/* ========================= */
+/* CARD */
+/* ========================= */
+
+.cert-card {
+
+  padding: 28px;
+
+  position: relative;
+
+  overflow: visible;
+
+  transition:
+    transform 0.3s,
+    border-color 0.3s;
+
+  background: rgba(255,255,255,0.01);
+}
+
+/* FUTURISTIC BORDER */
+
+.cert-card::before {
+
+  content: '';
+
+  position: absolute;
+
+  inset: 0;
+
+  border: 1px solid var(--border);
+
+  clip-path: polygon(
+    0 0,
+    calc(100% - 16px) 0,
+    100% 16px,
+    100% 100%,
+    16px 100%,
+    0 calc(100% - 16px)
+  );
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+/* TOP LINE */
+
+.cert-card::after {
+
+  content: '';
+
+  position: absolute;
+
+  top:0;
+  left:0;
+  right:0;
+
+  height: 2px;
+
+  background:
+    linear-gradient(
+      to right,
+      var(--red),
+      var(--gold)
+    );
+
+  z-index: 3;
+}
+
+/* CARD HOVER */
+
+.cert-card:hover {
+
+  transform:
+    translateY(-14px)
+    scale(1.12);
+
+  background: rgba(255,255,255,0.03);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.45);
+
+  z-index: 20;
+}
+
+/* BORDER HOVER */
+
+.cert-card:hover::before {
+
+  border-color: var(--gold);
+}
+
+/* ========================= */
+/* ICON */
+/* ========================= */
+
+.cert-icon {
+
+  font-size: 28px;
+
+  margin-bottom: 16px;
+}
+
+/* ========================= */
+/* TITLE */
+/* ========================= */
+
+.cert-title {
+
+  font-family: 'Cinzel', serif;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+
+  color: var(--text);
+}
+
+/* ========================= */
+/* BADGE */
+/* ========================= */
+
+.cert-badge {
+
+  display: inline-block;
+
+  margin-top: 12px;
+
+  font-family: 'Share Tech Mono', monospace;
+
+  font-size: 9px;
+
+  letter-spacing: 2px;
+
+  color: var(--gold);
+
+  text-transform: uppercase;
+
+  border: 1px solid var(--gold);
+
+  padding: 3px 8px;
+}
+
+/* ========================= */
+/* CERTIFICATE PREVIEW */
+/* ========================= */
+
+.cert-preview{
+
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 420px;
+
+  max-width: 90vw;
+
+  transform:
+    translate(-50%, -50%)
+    scale(0.7);
+
+  opacity: 0;
+
+  border: 1px solid var(--gold);
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.6);
+
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+
+  z-index: 50;
+
+  pointer-events: none;
+}
+
+/* ========================= */
+/* CONTENT */
+/* ========================= */
+
+.cert-content{
+
+  position: relative;
+
+  z-index: 2;
+
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+/* ========================= */
+/* SHOW CERTIFICATE */
+/* ========================= */
+
+.cert-card:hover .cert-preview{
+
+  opacity: 1;
+
+  transform:
+    translate(-50%, -55%)
+    scale(1);
+}
+
+/* ========================= */
+/* FADE CONTENT */
+/* ========================= */
+
+.cert-card:hover .cert-content{
+
+  opacity: 0.12;
+
+  transform: translateY(8px);
+}
 
   /* CONTACT */
   #contact {
@@ -939,20 +1135,74 @@
   </div>
   <div class="cert-grid">
     <div class="cert-card reveal">
-      <div class="cert-icon">🛡️</div>
-      <div class="cert-title">Sertifikasi Keselamatan Kerja Anti Titan</div>
-      <div class="cert-badge">Certified</div>
+
+  <img
+    class="cert-preview"
+    src="sertif1.png"
+    alt="sertifikat"
+  >
+
+  <div class="cert-content">
+
+    <div class="cert-icon">🛡️</div>
+
+    <div class="cert-title">
+      Sertifikasi Keselamatan Kerja Anti Titan
     </div>
+
+    <div class="cert-badge">
+      Certified
+    </div>
+
+  </div>
+
+</div>
     <div class="cert-card reveal">
-      <div class="cert-icon">🏆</div>
-      <div class="cert-title">Juara 1 Lomba Panjat Tembok Shiganshina</div>
-      <div class="cert-badge">Champion</div>
+
+  <img
+    class="cert-preview"
+    src="sertif2.png"
+    alt="sertifikat"
+  >
+
+  <div class="cert-content">
+
+    <div class="cert-icon">🏆</div>
+
+    <div class="cert-title">
+      Juara 1 Lomba Panjat Tembok Shiganshina
     </div>
+
+    <div class="cert-badge">
+      Champion
+    </div>
+
+  </div>
+
+</div>
     <div class="cert-card reveal">
-      <div class="cert-icon">⭐</div>
-      <div class="cert-title">Employee of The Rumbling 2024</div>
-      <div class="cert-badge">Award</div>
+
+  <img
+    class="cert-preview"
+    src="sertif3.png"
+    alt="sertifikat"
+  >
+
+  <div class="cert-content">
+
+    <div class="cert-icon">⭐</div>
+
+    <div class="cert-title">
+      Employee Of The Rumbling 2024
     </div>
+
+    <div class="cert-badge">
+      Award
+    </div>
+
+  </div>
+
+</div>
   </div>
 </section>
 
@@ -964,7 +1214,7 @@
       <p class="contact-sub">Tertarik bekerja sama? Saya selalu terbuka untuk proyek dan peluang baru. Hubungi saya melalui kontak di bawah ini.</p>
     </div>
     <div class="contact-cards reveal">
-      <a class="contact-card" href="mailto:hello@reallygreatsite.com">
+      <a class="contact-card" href="mailto:ahmdygr@gmail.com">
         <div class="contact-card-icon">✉️</div>
         <div class="contact-card-label">Email</div>
         <div class="contact-card-val">ahmdygr@gmail.com</div>
@@ -1013,8 +1263,16 @@ const observer = new IntersectionObserver((entries) => {
       entry.target.classList.add('visible');
       // Animate skill bars
       entry.target.querySelectorAll('.skill-fill').forEach(bar => {
-        setTimeout(() => bar.classList.add('animated'), 200);
-      });
+
+      const width = bar.dataset.width * 100;
+
+      setTimeout(() => {
+
+        bar.style.width = width + '%';
+
+      }, 200);
+
+    });
     }
   });
 }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
