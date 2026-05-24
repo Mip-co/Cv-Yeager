@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview — Ahmad Yeager</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Share+Tech+Mono&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --surface: #ede8de;
+  --text: #1a1a1a;
+  --text-dim: #666;
+  --accent: #2c5f8a;
+  --border: #ccc;
+  --red: #c0392b;
+  --phase: 0;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100%; height:100%;
+  overflow: hidden;
+  user-select: none;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Special Elite', serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 2s, color 2s;
+  position: relative;
+}
+
+/* NOISE OVERLAY */
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:0; opacity:0.5;
+  mix-blend-mode: overlay;
+}
+
+/* SCANLINES (appears phase 2+) */
+#scanlines {
+  position:fixed; inset:0; pointer-events:none; z-index:500;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  opacity:0; transition: opacity 2s;
+}
+
+/* VIGNETTE */
+#vignette {
+  position:fixed; inset:0; pointer-events:none; z-index:499;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0) 100%);
+  transition: background 3s;
+}
+
+/* RED FLASH for jumpscare */
+#flash {
+  position:fixed; inset:0; z-index:9000;
+  background: #ff0000;
+  opacity:0; pointer-events:none;
+  transition: opacity 0.05s;
+}
+
+/* CRACK OVERLAY */
+#cracks {
+  position:fixed; inset:0; z-index:600; pointer-events:none;
+  opacity:0; transition: opacity 1.5s;
+}
+#cracks svg { width:100%; height:100%; }
+
+/* STATIC OVERLAY */
+#static {
+  position:fixed; inset:0; z-index:550; pointer-events:none;
+  opacity:0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='s'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='1' type='fractalNoise'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23s)'/%3E%3C/svg%3E");
+  mix-blend-mode: screen;
+}
+
+/* BLOOD DRIP */
+#blood {
+  position:fixed; top:0; left:0; right:0; z-index:700; pointer-events:none;
+  display:flex; gap:0; opacity:0; transition: opacity 1s;
+}
+.drip {
+  flex:1; height:0px; background: #8b0000;
+  border-radius: 0 0 4px 4px;
+  transition: height 3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* MAIN CARD */
+.card {
+  position: relative; z-index:10;
+  width: min(680px, 92vw);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 44px 52px;
+  transition: background 2s, border-color 2s, transform 0.1s;
+}
+
+/* Paper texture lines */
+.card::before {
+  content:'';
+  position:absolute; inset:0;
+  background: repeating-linear-gradient(transparent, transparent 27px, rgba(0,0,0,0.04) 27px, rgba(0,0,0,0.04) 28px);
+  pointer-events:none;
+}
+
+.card-header {
+  display:flex; justify-content:space-between; align-items:flex-start;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.company-info { }
+.company-name {
+  font-family: 'Cinzel', serif;
+  font-size: 13px; letter-spacing: 4px;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.doc-title {
+  font-size: 10px; letter-spacing: 2px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  text-transform: uppercase;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.candidate-badge {
+  text-align: right;
+}
+.candidate-name {
+  font-family: 'Cinzel', serif;
+  font-size: 15px; font-weight:700;
+  color: var(--text);
+  letter-spacing: 2px;
+}
+.candidate-id {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; color: var(--text-dim);
+  letter-spacing: 3px; margin-top: 3px;
+}
+
+/* QUESTION AREA */
+.q-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px; letter-spacing: 3px;
+  color: var(--text-dim); text-transform:uppercase;
+  margin-bottom: 10px;
+}
+.q-text {
+  font-size: 15px; line-height: 1.85;
+  color: var(--text);
+  min-height: 80px;
+  margin-bottom: 28px;
+  position:relative;
+  transition: color 0.5s;
+}
+
+/* CHOICES */
+.choices { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+.choice {
+  display:flex; align-items:flex-start; gap:14px;
+  padding:14px 18px;
+  border:1px solid var(--border);
+  background: transparent;
+  cursor:pointer;
+  font-family: 'Special Elite', serif;
+  font-size:13px; color:var(--text);
+  text-align:left; line-height:1.5;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  position:relative; overflow:hidden;
+}
+.choice:hover { background: rgba(0,0,0,0.04); border-color: var(--accent); transform:translateX(3px); }
+.choice:disabled { cursor:not-allowed; }
+.choice-letter {
+  font-family: 'Share Tech Mono', monospace;
+  font-size:10px; letter-spacing:2px;
+  color: var(--accent); min-width:16px; margin-top:2px;
+  transition: color 0.3s;
+}
+.choice.correct { background:rgba(39,174,96,0.1); border-color:#27ae60; }
+.choice.wrong   { background:rgba(192,57,43,0.1); border-color:var(--red); }
+
+/* HUD */
+.hud {
+  display:flex; justify-content:space-between; align-items:center;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.hud-lives { display:flex; gap:6px; }
+.hd { width:10px; height:10px; background:var(--red); transform:rotate(45deg); transition:background 0.3s; }
+.hd.lost { background: transparent; border:1px solid var(--border); }
+.hud-score {
+  font-family:'Share Tech Mono', monospace;
+  font-size:10px; letter-spacing:3px; color:var(--text-dim);
+}
+.hud-progress {
+  width:120px; height:2px; background:var(--border); position:relative;
+}
+.hud-progress-fill {
+  height:100%; background:var(--accent);
+  transition: width 0.8s cubic-bezier(0.16,1,0.3,1), background 2s;
+  width:0%;
+}
+
+/* FEEDBACK */
+.feedback {
+  font-family:'Share Tech Mono', monospace;
+  font-size:10px; letter-spacing:1px;
+  color:var(--text-dim); min-height:20px;
+  margin-bottom:16px;
+  transition: color 0.3s;
+}
+
+/* GLITCH TEXT */
+@keyframes glitch1 {
+  0%,100%{ clip-path:inset(0 0 95% 0); transform:translate(-4px,0); }
+  50%{ clip-path:inset(20% 0 60% 0); transform:translate(4px,0); }
+}
+@keyframes glitch2 {
+  0%,100%{ clip-path:inset(70% 0 5% 0); transform:translate(4px,0); }
+  50%{ clip-path:inset(40% 0 30% 0); transform:translate(-4px,0); }
+}
+.glitch-wrap { position:relative; }
+.glitch-wrap::before, .glitch-wrap::after {
+  content: attr(data-text);
+  position:absolute; inset:0;
+  color: var(--text);
+  opacity:0;
+}
+.glitch-wrap.active::before {
+  opacity:0.7; color:#ff0040;
+  animation: glitch1 0.3s steps(1) infinite;
+}
+.glitch-wrap.active::after {
+  opacity:0.7; color:#00ffff;
+  animation: glitch2 0.3s steps(1) infinite;
+}
+
+/* SHAKE */
+@keyframes shake {
+  0%,100%{ transform:translate(0,0) rotate(0); }
+  20%{ transform:translate(-8px,3px) rotate(-0.5deg); }
+  40%{ transform:translate(10px,-4px) rotate(0.5deg); }
+  60%{ transform:translate(-6px,6px) rotate(-0.3deg); }
+  80%{ transform:translate(8px,-2px) rotate(0.3deg); }
+}
+.shaking { animation: shake 0.5s ease both; }
+
+/* TYPEWRITER */
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.cursor-type { animation: blink 0.7s step-end infinite; }
+
+/* ============
+   SCREENS
+============ */
+
+/* START */
+#screen-start {
+  text-align:center;
+}
+.start-stamp {
+  display:inline-block;
+  border: 3px solid var(--accent);
+  padding:8px 20px;
+  font-family:'Cinzel', serif;
+  font-size:10px; letter-spacing:6px;
+  color:var(--accent);
+  text-transform:uppercase;
+  margin-bottom:28px;
+  transform:rotate(-1deg);
+}
+.start-title {
+  font-family:'Cinzel', serif;
+  font-size: clamp(22px,4vw,34px);
+  font-weight:900; letter-spacing:3px;
+  color:var(--text); margin-bottom:8px;
+  line-height:1.15;
+}
+.start-title span { color:var(--accent); }
+.start-divider {
+  width:60px; height:1px; background:var(--border);
+  margin:20px auto;
+}
+.start-desc {
+  font-size:13px; line-height:1.9;
+  color:var(--text-dim);
+  max-width:420px; margin:0 auto 32px;
+}
+.start-meta {
+  font-family:'Share Tech Mono', monospace;
+  font-size:9px; letter-spacing:3px;
+  color:var(--text-dim); text-transform:uppercase;
+  margin-bottom:24px;
+}
+.btn-start {
+  display:inline-block;
+  border:1px solid var(--accent);
+  padding:13px 40px;
+  font-family:'Share Tech Mono', monospace;
+  font-size:10px; letter-spacing:4px;
+  text-transform:uppercase;
+  color:var(--accent);
+  background:transparent;
+  cursor:pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-start:hover { background:var(--accent); color:#fff; }
+
+/* END */
+#screen-end { display:none; text-align:center; }
+.end-stamp {
+  display:inline-block;
+  border:4px solid var(--red);
+  padding:10px 28px;
+  font-family:'Cinzel', serif;
+  font-size:clamp(18px,4vw,28px);
+  font-weight:900; letter-spacing:5px;
+  color:var(--red);
+  transform:rotate(-3deg);
+  margin-bottom:24px;
+}
+.end-subtitle {
+  font-size:12px; line-height:1.8;
+  color:var(--text-dim); margin-bottom:24px;
+  font-family:'Share Tech Mono', monospace;
+  letter-spacing:1px;
+}
+.end-score-big {
+  font-family:'Cinzel', serif;
+  font-size:clamp(40px,8vw,64px); font-weight:900;
+  color:var(--text); line-height:1;
+  margin-bottom:6px;
+}
+.end-score-label {
+  font-family:'Share Tech Mono', monospace;
+  font-size:9px; letter-spacing:4px;
+  color:var(--text-dim); text-transform:uppercase;
+  margin-bottom:28px;
+}
+.btn-restart {
+  border:1px solid var(--border);
+  padding:12px 32px;
+  font-family:'Share Tech Mono', monospace;
+  font-size:10px; letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--text-dim);
+  background:transparent;
+  cursor:pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-restart:hover { border-color:var(--text); color:var(--text); }
+
+/* JUMPSCARE SCREEN */
+#screen-jumpscare {
+  display:none; position:fixed; inset:0; z-index:8000;
+  background:#000;
+  align-items:center; justify-content:center;
+  flex-direction:column;
+}
+#screen-jumpscare.active { display:flex; }
+.js-content {
+  text-align:center;
+  animation: jsAppear 0.1s ease both;
+}
+@keyframes jsAppear {
+  from{ transform:scale(1.3); opacity:0; }
+  to  { transform:scale(1);   opacity:1; }
+}
+.js-face {
+  font-size: min(35vw, 220px);
+  line-height:1;
+  filter: drop-shadow(0 0 60px rgba(200,0,0,0.8));
+  animation: jsFaceAnim 0.15s steps(1) infinite;
+}
+.js-face img {
+  width: min(70vw, 420px);
+  height: min(70vh, 480px);
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  border: 3px solid #ff0000;
+  box-shadow: 0 0 60px rgba(255,0,0,0.9), 0 0 120px rgba(255,0,0,0.4);
+  filter: contrast(1.1) brightness(0.95);
+  animation: jsFaceAnim 0.15s steps(1) infinite;
+}
+@keyframes jsFaceAnim {
+  0%  { transform:scale(1)    rotate(-1.5deg); filter:hue-rotate(0deg) drop-shadow(0 0 60px rgba(200,0,0,0.8)); }
+  33% { transform:scale(1.04) rotate(1.5deg);  filter:hue-rotate(10deg) drop-shadow(0 0 80px rgba(200,0,0,1)); }
+  66% { transform:scale(0.97) rotate(-0.8deg); filter:hue-rotate(5deg) drop-shadow(0 0 40px rgba(200,0,0,0.6)); }
+}
+.js-bigtext {
+  font-family:'Cinzel', serif;
+  font-size:clamp(24px,6vw,52px); font-weight:900;
+  color:#ff0000; letter-spacing:6px;
+  margin-top:16px;
+  text-shadow: 0 0 30px rgba(255,0,0,0.8), 2px 2px 0 #000;
+  animation: textFlicker 0.2s steps(1) infinite;
+}
+@keyframes textFlicker {
+  0%,100%{ opacity:1; } 50%{ opacity:0.7; }
+}
+.js-sub {
+  font-family:'Share Tech Mono', monospace;
+  font-size:clamp(10px,2vw,14px); letter-spacing:3px;
+  color:#666; margin-top:12px;
+  text-transform:uppercase;
+}
+
+/* PHASE-BASED HORROR STYLES */
+body.phase1 {
+  --bg: #f0ebe0;
+  --surface: #e8e2d6;
+  --text: #1a1a1a;
+  --accent: #2c5f8a;
+}
+body.phase2 {
+  --bg: #1a1410;
+  --surface: #221c16;
+  --text: #d4c9b8;
+  --text-dim: #7a6e60;
+  --accent: #c9a84c;
+  --border: rgba(201,168,76,0.2);
+  background: #1a1410;
+}
+body.phase3 {
+  --bg: #0a0505;
+  --surface: #120808;
+  --text: #e8d4c0;
+  --text-dim: #5a4040;
+  --accent: #c0392b;
+  --border: rgba(192,57,43,0.25);
+}
+
+/* Phase 3 card distort */
+body.phase3 .card {
+  animation: cardDistort 8s ease-in-out infinite;
+}
+@keyframes cardDistort {
+  0%,100%{ transform:perspective(800px) rotateX(0deg) rotateY(0deg); }
+  25%{ transform:perspective(800px) rotateX(0.5deg) rotateY(-0.3deg); }
+  75%{ transform:perspective(800px) rotateX(-0.3deg) rotateY(0.5deg); }
+}
+
+/* Phase 3 text drift */
+body.phase3 .q-text {
+  animation: textDrift 6s ease-in-out infinite;
+}
+@keyframes textDrift {
+  0%,100%{ letter-spacing:0px; }
+  50%{ letter-spacing:0.5px; }
+}
+
+/* TYPEWRITER */
+.typewriter-char { display:inline; }
+
+/* SCREEN OFF */
+#screenoff {
+  position:fixed; inset:0; z-index:9999;
+  background:#000; opacity:0; pointer-events:none;
+  transition: opacity 0.3s;
+}
+</style>
+</head>
+<body>
+
+<!-- OVERLAYS -->
+<div id="scanlines"></div>
+<div id="vignette"></div>
+<div id="flash"></div>
+<div id="static"></div>
+<div id="screenoff"></div>
+<div id="blood">
+  <div class="drip" style="height:0px"></div>
+  <div class="drip" style="height:0px; transition-delay:0.3s"></div>
+  <div class="drip" style="height:0px; transition-delay:0.7s"></div>
+  <div class="drip" style="height:0px; transition-delay:0.1s"></div>
+  <div class="drip" style="height:0px; transition-delay:0.5s"></div>
+  <div class="drip" style="height:0px; transition-delay:0.9s"></div>
+  <div class="drip" style="height:0px; transition-delay:0.2s"></div>
+  <div class="drip" style="height:0px; transition-delay:0.6s"></div>
+</div>
+<div id="cracks">
+  <svg viewBox="0 0 1000 700" preserveAspectRatio="none" fill="none">
+    <path d="M200 0 L180 120 L240 180 L160 300 L220 400 L170 500" stroke="rgba(0,0,0,0.15)" stroke-width="1.5"/>
+    <path d="M180 120 L120 160 L80 240" stroke="rgba(0,0,0,0.1)" stroke-width="0.8"/>
+    <path d="M800 0 L820 100 L760 200 L830 320 L790 450 L840 560 L800 700" stroke="rgba(0,0,0,0.12)" stroke-width="1.2"/>
+    <path d="M820 100 L900 140 L950 200" stroke="rgba(0,0,0,0.08)" stroke-width="0.7"/>
+    <path d="M500 0 L510 80 L480 160 L520 220" stroke="rgba(0,0,0,0.07)" stroke-width="0.6"/>
+    <path d="M0 350 L100 360 L180 340 L280 380 L360 360" stroke="rgba(0,0,0,0.08)" stroke-width="0.8"/>
+    <path d="M700 700 L680 600 L720 520 L680 420" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
+  </svg>
+</div>
+
+<!-- JUMPSCARE SCREEN -->
+<div id="screen-jumpscare">
+  <div class="js-content">
+    <div class="js-face" id="jsFace">😤</div>
+    <div class="js-bigtext" id="jsText">TATAKAE</div>
+    <div class="js-sub" id="jsSub">kamu tidak memahami kebebasan</div>
+  </div>
+</div>
+
+<!-- MAIN CARD -->
+<div class="card" id="mainCard">
+
+  <!-- START SCREEN -->
+  <div id="screen-start">
+    <div class="start-stamp">CONFIDENTIAL</div>
+    <h1 class="start-title">Sesi Interview<br><span>Ahmad Yeager</span></h1>
+    <div class="start-divider"></div>
+    <p class="start-meta">Formulir HRD — Penilaian Kandidat — Ref: AY/2026</p>
+    <p class="start-desc">
+      Anda adalah HRD yang bertugas mewawancarai pelamar hari ini.<br>
+      Nama pelamar: Ahmad Yeager. Posisi: Staf Umum.<br><br>
+      Nilai setiap jawaban kandidat. Apakah dapat diterima, atau harus ditolak?<br>
+      Prosedur standar. Tidak ada yang perlu dikhawatirkan.
+    </p>
+    <p class="start-meta">3 nyawa &nbsp;·&nbsp; 8 pertanyaan &nbsp;·&nbsp; fullscreen required</p>
+    <button class="btn-start" id="btnStart" onclick="requestFullscreenAndStart()">MULAI SESI →</button>
+  </div>
+
+  <!-- GAMEPLAY -->
+  <div id="screen-game" style="display:none">
+    <div class="card-header">
+      <div class="company-info">
+        <div class="company-name" id="companyName">PT Dimbud Mencari Cinta Sejati Tbk</div>
+        <div class="doc-title" id="docTitle">Formulir Penilaian Interview — Rahasia</div>
+      </div>
+      <div class="candidate-badge">
+        <div class="candidate-name" id="candidateName">Ahmad Yeager</div>
+        <div class="candidate-id" id="candidateId">AY-2026-001 &nbsp;·&nbsp; Staf Umum</div>
+      </div>
+    </div>
+
+    <div class="q-label" id="qLabel">Pernyataan Kandidat — 01 / 08</div>
+    <div class="q-text glitch-wrap" id="qText" data-text=""></div>
+
+    <div class="feedback" id="feedback">Nilai pernyataan kandidat dengan bijak.</div>
+
+    <div class="choices" id="choicesEl"></div>
+
+    <div class="hud">
+      <div class="hud-lives" id="livesEl">
+        <div class="hd"></div><div class="hd"></div><div class="hd"></div>
+      </div>
+      <div class="hud-score" id="hudScore">SKOR: 0</div>
+      <div class="hud-progress"><div class="hud-progress-fill" id="progressFill"></div></div>
+    </div>
+  </div>
+
+  <!-- END SCREEN -->
+  <div id="screen-end">
+    <div class="end-stamp" id="endStamp">SELESAI</div>
+    <div class="end-score-big" id="endScoreNum">0</div>
+    <div class="end-score-label">Poin Terkumpul</div>
+    <div class="end-subtitle" id="endSub">—</div>
+    <button class="btn-restart" onclick="restartGame()">ULANGI SESI</button>
+  </div>
+
+</div>
+
+<script>
+// ==================
+// CUSTOM AUDIO SLOTS
+// Isi path/URL di sini kalau mau pakai file audio sendiri.
+// Kalau dikosongkan (''), game otomatis pakai audio generated.
+// ==================
+const CUSTOM_AUDIO = {
+  jumpscare : '',   // Suara pas jumpscare muncul     — contoh: 'sounds/scream.mp3'
+  wrong     : '',   // Suara jawaban salah             — contoh: 'sounds/wrong.mp3'
+  correct   : '',   // Suara jawaban benar             — contoh: 'sounds/correct.mp3'
+  ambientLofi  : '', // Musik fase 1 (santai)          — contoh: 'sounds/lofi.mp3'
+  ambientCreepy: '', // Musik fase 2 (mulai aneh)      — contoh: 'sounds/creepy.mp3'
+  ambientChaos : '', // Musik fase 3 (chaos)           — contoh: 'sounds/chaos.mp3'
+};
+
+// Helper: play file audio custom (dengan volume opsional 0.0–1.0)
+function playCustom(key, volume=1.0, loop=false) {
+  const src = CUSTOM_AUDIO[key];
+  if(!src) return false; // kosong = pakai generated
+  try {
+    const a = new Audio(src);
+    a.volume = volume;
+    a.loop = loop;
+    a.play().catch(()=>{});
+    return a; // kembalikan instance biar bisa di-stop kalau perlu
+  } catch(e){ return false; }
+}
+
+// ==================
+// AUDIO ENGINE
+// ==================
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+
+function playTone(freq, type, dur, vol, delay=0, ramp=true) {
+  try {
+    const o = AC.createOscillator();
+    const g = AC.createGain();
+    o.connect(g); g.connect(AC.destination);
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, AC.currentTime + delay);
+    g.gain.linearRampToValueAtTime(vol, AC.currentTime + delay + 0.02);
+    if(ramp) g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + delay + dur);
+    o.start(AC.currentTime + delay);
+    o.stop(AC.currentTime + delay + dur + 0.05);
+  } catch(e){}
+}
+
+function playNoise(dur, vol=0.1, delay=0) {
+  try {
+    const buf = AC.createBuffer(1, AC.sampleRate * dur, AC.sampleRate);
+    const d = buf.getChannelData(0);
+    for(let i=0; i<d.length; i++) d[i] = Math.random()*2-1;
+    const s = AC.createBufferSource();
+    const g = AC.createGain();
+    s.buffer = buf; s.connect(g); g.connect(AC.destination);
+    g.gain.setValueAtTime(0, AC.currentTime + delay);
+    g.gain.linearRampToValueAtTime(vol, AC.currentTime + delay + 0.05);
+    g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + delay + dur);
+    s.start(AC.currentTime + delay);
+  } catch(e){}
+}
+
+// Referensi audio ambient yang sedang loop (buat stop kalau ganti fase)
+let _ambientAudioEl = null;
+
+function playLofi() {
+  if(CUSTOM_AUDIO.ambientLofi) {
+    if(_ambientAudioEl) { _ambientAudioEl.pause(); _ambientAudioEl=null; }
+    _ambientAudioEl = playCustom('ambientLofi', 0.4, true);
+    return;
+  }
+  // Soft ambient chord: lo-fi piano-like
+  const notes = [261, 329, 392, 523];
+  notes.forEach((f,i) => {
+    playTone(f, 'sine', 3.5, 0.04, i*0.1);
+    // subtle overtone
+    playTone(f*2, 'sine', 2, 0.01, i*0.1+0.05);
+  });
+  // Soft low rumble
+  playTone(55, 'sine', 4, 0.03, 0);
+}
+
+function playCreepy() {
+  if(CUSTOM_AUDIO.ambientCreepy) {
+    if(_ambientAudioEl) { _ambientAudioEl.pause(); _ambientAudioEl=null; }
+    _ambientAudioEl = playCustom('ambientCreepy', 0.4, true);
+    return;
+  }
+  // Dissonant low chord
+  [110, 155, 174, 233].forEach((f,i) => {
+    playTone(f, 'triangle', 3, 0.05, i*0.15);
+  });
+  playNoise(0.3, 0.05, 0.1);
+  // Reverse-like sweep
+  const o = AC.createOscillator();
+  const g = AC.createGain();
+  o.connect(g); g.connect(AC.destination);
+  o.type='sawtooth'; o.frequency.setValueAtTime(300, AC.currentTime);
+  o.frequency.exponentialRampToValueAtTime(80, AC.currentTime+2);
+  g.gain.setValueAtTime(0, AC.currentTime);
+  g.gain.linearRampToValueAtTime(0.04, AC.currentTime+0.3);
+  g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime+2.5);
+  o.start(); o.stop(AC.currentTime+3);
+}
+
+function playChaos() {
+  if(CUSTOM_AUDIO.ambientChaos) {
+    if(_ambientAudioEl) { _ambientAudioEl.pause(); _ambientAudioEl=null; }
+    _ambientAudioEl = playCustom('ambientChaos', 0.5, true);
+    return;
+  }
+  // Harsh dissonant screech build
+  [63, 88, 125, 177, 250].forEach((f,i) => {
+    playTone(f, 'sawtooth', 2, 0.06, i*0.05);
+  });
+  playNoise(0.5, 0.15, 0);
+  // High freq whine
+  playTone(2800, 'sine', 1.5, 0.04, 0.1);
+  playTone(3200, 'sine', 1.2, 0.03, 0.3);
+}
+
+function playJumpscare() {
+  if(playCustom('jumpscare', 1.0)) return; // pakai file custom kalau ada
+  // LOUD noise burst
+  playNoise(0.2, 0.8, 0);
+  // Scream-like
+  [400, 600, 800, 1200, 1600].forEach((f,i) => {
+    playTone(f, 'sawtooth', 0.8, 0.2, i*0.02);
+  });
+  // Low boom
+  playTone(60, 'sine', 1, 0.4, 0);
+  // High screech
+  playTone(3500, 'sawtooth', 0.5, 0.15, 0.05);
+  playNoise(0.5, 0.3, 0.1);
+}
+
+function playCorrect() {
+  if(playCustom('correct', 0.8)) return;
+  playTone(523, 'sine', 0.4, 0.1, 0);
+  playTone(659, 'sine', 0.4, 0.08, 0.1);
+}
+
+function playWrong() {
+  if(playCustom('wrong', 0.8)) return;
+  playTone(200, 'sawtooth', 0.3, 0.1, 0);
+  playNoise(0.2, 0.06, 0.1);
+}
+
+function playHeartbeat() {
+  // Low thud thud
+  playTone(70, 'sine', 0.15, 0.2, 0);
+  playTone(65, 'sine', 0.12, 0.15, 0.2);
+}
+
+// AMBIENT LOOP
+let ambientLoop = null;
+let loopPhase = 0;
+
+function startAmbient(phase) {
+  loopPhase = phase;
+  scheduleAmbient();
+}
+
+function scheduleAmbient() {
+  if(ambientLoop) clearTimeout(ambientLoop);
+  if(loopPhase === 0) {
+    playLofi();
+    ambientLoop = setTimeout(scheduleAmbient, 4000);
+  } else if(loopPhase === 1) {
+    playCreepy();
+    ambientLoop = setTimeout(scheduleAmbient, 3500);
+  } else if(loopPhase === 2) {
+    playChaos();
+    // Heartbeat every 1.5s in phase 3
+    ambientLoop = setTimeout(() => {
+      playHeartbeat();
+      setTimeout(scheduleAmbient, 1800);
+    }, 1500);
+  }
+}
+
+function setAmbientPhase(p) {
+  loopPhase = p;
+}
+
+// ==================
+// QUESTIONS
+// ==================
+const questions = [
+  // PHASE 0 — normal, santai
+  {
+    phase: 0,
+    statement: 'Selamat pagi, Bu. Nama saya Ahmad Yeager. Saya melamar posisi Staf Umum. Semua berkas sudah saya siapkan sejak tiga hari lalu.',
+    a: { text: 'Silakan duduk. Kita mulai dengan ceritakan diri Anda secara singkat.', correct: false },
+    b: { text: 'Baik, terima kasih sudah tepat waktu. Saya sudah baca CV Anda sebelumnya.', correct: true },
+    ok: 'Tepat. Mengakui sudah membaca CV membuat kandidat merasa dihargai — interview pun lebih produktif.',
+    bad: 'Meminta kandidat "ceritakan diri" padahal CV sudah ada di tangan adalah pemborosan waktu keduanya.',
+    js: { face: '🗂️', text: 'IBU BELUM BACA CV SAYA?', sub: 'Saya sudah mempersiapkan ini. Sudah lama.' }
+  },
+  {
+    phase: 0,
+    statement: 'IPK saya 3.8, tujuh tahun pengalaman lapangan. Saya tahu angka di kertas tidak selalu mencerminkan kemampuan nyata. Tapi saya bisa membuktikannya.',
+    a: { text: 'Justru pengalaman lapangan yang kami prioritaskan. Boleh ceritakan satu situasi paling menantang?', correct: true },
+    b: { text: 'Kami tetap perlu memverifikasi ijazah dan referensi kerja Anda sebelum melanjutkan.', correct: false },
+    ok: 'Benar. Menggali pengalaman konkret jauh lebih informatif daripada administrasi di tahap awal.',
+    bad: 'Membahas verifikasi dokumen di tengah sesi mengirim sinyal tidak percaya. Kandidat merasakannya.',
+    js: { face: '📋', text: 'VERIFIKASI?', sub: 'Saya datang untuk didengar. Bukan untuk diaudit.' }
+  },
+  // PHASE 1 — mulai aneh
+  {
+    phase: 1,
+    statement: 'Saya bekerja baik dalam tim. Tapi... saya juga tahu kapan harus berhenti menunggu konsensus dan mengambil keputusan sendiri. Ibu pasti pernah merasakan hal yang sama.',
+    a: { text: 'Tentu. Kemandirian dalam mengambil keputusan itu justru yang kami cari di level ini.', correct: true },
+    b: { text: 'Di sini kami mengutamakan keputusan kolektif. Tidak ada yang bertindak sendiri.', correct: false },
+    ok: 'Tepat. Kandidat tidak menolak tim — dia mendeskripsikan kedewasaan dalam berorganisasi.',
+    bad: 'Jawaban itu terdengar seperti peringatan, bukan kebijakan. Dia mencatatnya.',
+    js: { face: '🌑', text: 'IBU TIDAK PAHAM.', sub: 'Tidak ada yang benar-benar paham kecuali yang sudah ada di sana.' }
+  },
+  {
+    phase: 1,
+    statement: 'Kelemahan saya? Saya sulit berhenti kalau sudah memulai sesuatu. Saya tidak mengenal setengah-setengah. Apapun yang saya mulai... akan saya selesaikan.',
+    a: { text: 'Itu bisa menjadi kekuatan besar. Bagaimana Anda menyeimbangkannya dengan prioritas tim?', correct: false },
+    b: { text: 'Dedikasi yang langka. Apa project terakhir yang Anda selesaikan dengan prinsip itu?', correct: true },
+    ok: 'Tepat. Menggali bukti nyata jauh lebih berguna daripada meminta dia mendefinisikan ulang kelemahannya.',
+    bad: 'Meminta dia "menyeimbangkan" justru mengaburkan kekuatan yang baru saja dia tunjukkan.',
+    js: { face: '⚔️', text: 'TIDAK ADA YANG PERLU DISEIMBANGKAN.', sub: 'Komitmen bukan kelemahan yang perlu dikelola.' }
+  },
+  {
+    phase: 1,
+    statement: 'Saya tidak takut tekanan, Bu. Saya pernah berada di situasi di mana satu keputusan salah... bisa mengakhiri segalanya. Deadline dan KPI terasa sangat kecil setelah itu.',
+    a: { text: 'Pengalaman seperti itu membentuk judgment yang tidak bisa diajarkan. Kami menghargainya.', correct: true },
+    b: { text: 'Kami tetap memiliki standar performa. Apakah Anda yakin bisa menyesuaikan diri?', correct: false },
+    ok: 'Benar. Merespons dengan empati dan apresiasi membuka dialog yang lebih jujur.',
+    bad: 'Dia baru saja berbagi sesuatu yang berat. Membalasnya dengan "standar performa" adalah kekeliruan besar.',
+    js: { face: '🔪', text: 'STANDAR PERFORMA?', sub: 'Ibu tidak tahu apa yang sudah saya lewati untuk sampai di sini.' }
+  },
+  // PHASE 2 — chaos
+  {
+    phase: 2,
+    statement: '...Bu, boleh saya jujur? Saya melamar bukan karena butuh pekerjaan. Saya melamar karena saya ingin melihat apakah tempat ini... layak untuk tujuan saya. Sejauh ini, hasilnya belum meyakinkan.',
+    a: { text: 'Saya menghargai kejujuran itu. Apa yang perlu kami tunjukkan untuk meyakinkan Anda?', correct: true },
+    b: { text: 'Kalau begitu mungkin posisi ini memang bukan yang tepat untuk Anda.', correct: false },
+    ok: 'Benar. Membalik pertanyaan menunjukkan kepercayaan diri dan membuat dinamika interview lebih seimbang.',
+    bad: 'Itu bukan penolakan — itu undangan. Dan kamu baru saja menutup pintunya.',
+    js: { face: '👁️', text: 'SALAH PILIH.', sub: 'Pintu memang masih ada. Tapi sesuatu menghalanginya sekarang.' }
+  },
+  {
+    phase: 2,
+    statement: 'S  a  y  a     m  a  s  i  h     d  i     s  i  n  i  ,     B  u. Ibu terlihat tidak nyaman. Apakah ruangan ini terlalu... kecil untuk kita berdua?',
+    a: { text: '[tetap duduk, pertahankan kontak mata] Mari kita lanjutkan ke pertanyaan berikutnya.', correct: true },
+    b: { text: '[pura-pura mengecek ponsel] Sebentar, ada pesan masuk penting.', correct: false },
+    ok: 'Tetap tenang. Itulah satu-satunya hal yang tersisa untuk dilakukan.',
+    bad: 'Dia tahu kamu tidak ada pesan. Dia tahu segalanya.',
+    js: { face: '🚪', text: 'TIDAK ADA PESAN.', sub: 'tidak ada pesan tidak ada jalan keluar tidak ada tidak ada' }
+  },
+  {
+    phase: 2,
+    statement: '[ HALAMAN INI SEHARUSNYA TIDAK TERBUKA ]\n\nTapi Ibu sudah di sini. Pertanyaan terakhir: apakah Ibu akan meloloskan saya, atau memilih untuk berpura-pura interview ini tidak pernah terjadi?',
+    a: { text: 'Kami akan menghubungi Anda dalam 3 hari kerja sesuai prosedur.', correct: true },
+    b: { text: '...saya perlu mendiskusikan ini dengan tim terlebih dahulu.', correct: false },
+    ok: 'Prosedur adalah satu-satunya pegangan yang tersisa. Pegang erat.',
+    bad: 'Tidak ada tim. Hanya kamu dan dia. Dan sekarang dia tahu kamu ragu.',
+    js: { face: '😶', text: 'TIDAK ADA YANG PERLU DIDISKUSIKAN.', sub: '...' }
+  }
+];
+
+// ==================
+// GAME STATE
+// ==================
+let qIdx = 0, score = 0, lives = 3, phase = 0, busy = false;
+let gameStarted = false;
+
+// ==================
+// FULLSCREEN
+// ==================
+function requestFullscreenAndStart() {
+  AC.resume();
+  const el = document.documentElement;
+  const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+  if(req) {
+    req.call(el).then(()=>{ startGame(); }).catch(()=>{ startGame(); });
+  } else {
+    startGame();
+  }
+}
+
+document.addEventListener('fullscreenchange', onFsChange);
+document.addEventListener('webkitfullscreenchange', onFsChange);
+function onFsChange() {
+  if(!gameStarted) return;
+  const fs = document.fullscreenElement || document.webkitFullscreenElement;
+  if(!fs && phase >= 1) {
+    // They escaped fullscreen — punish
+    triggerMiniScare('😤', 'KEMANA KAMU PERGI?', 'kembali ke sini.', 1500);
+    setTimeout(() => {
+      const el = document.documentElement;
+      const req = el.requestFullscreen || el.webkitRequestFullscreen;
+      if(req) req.call(el).catch(()=>{});
+    }, 1600);
+  }
+}
+
+// ==================
+// PHASE TRANSITION
+// ==================
+function setPhase(p) {
+  if(p === phase) return;
+  phase = p;
+  const body = document.body;
+  body.classList.remove('phase1','phase2','phase3');
+  if(p===0) {
+    body.classList.add('phase1');
+    document.getElementById('scanlines').style.opacity='0';
+    document.getElementById('vignette').style.background='radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0) 100%)';
+    setAmbientPhase(0);
+  } else if(p===1) {
+    body.classList.add('phase2');
+    document.getElementById('scanlines').style.opacity='0.6';
+    document.getElementById('vignette').style.background='radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 100%)';
+    setAmbientPhase(1);
+  } else {
+    body.classList.add('phase3');
+    document.getElementById('scanlines').style.opacity='1';
+    document.getElementById('vignette').style.background='radial-gradient(ellipse at center, transparent 20%, rgba(0,0,0,0.75) 100%)';
+    document.getElementById('cracks').style.opacity='1';
+    setAmbientPhase(2);
+    // Blood drip
+    document.getElementById('blood').style.opacity='1';
+    document.querySelectorAll('.drip').forEach((d,i)=>{
+      d.style.height = (30 + Math.random()*80) + 'px';
+    });
+    // Glitch the q text
+    document.getElementById('qText').classList.add('active');
+    // Periodic static flash
+    startStaticFlashes();
+    // Heartbeat on card
+    startHeartbeatShake();
+  }
+}
+
+let staticFlashInterval = null;
+function startStaticFlashes() {
+  if(staticFlashInterval) return;
+  staticFlashInterval = setInterval(() => {
+    if(phase < 2) { clearInterval(staticFlashInterval); staticFlashInterval=null; return; }
+    document.getElementById('static').style.opacity='0.12';
+    setTimeout(()=>{ document.getElementById('static').style.opacity='0'; }, 80+Math.random()*120);
+  }, 2000 + Math.random()*3000);
+}
+
+let hbInterval = null;
+function startHeartbeatShake() {
+  if(hbInterval) return;
+  hbInterval = setInterval(() => {
+    if(phase < 2) { clearInterval(hbInterval); hbInterval=null; return; }
+    document.getElementById('mainCard').classList.add('shaking');
+    setTimeout(()=>document.getElementById('mainCard').classList.remove('shaking'), 600);
+  }, 4000);
+}
+
+// ==================
+// GAME FLOW
+// ==================
+function startGame() {
+  gameStarted = true;
+  qIdx=0; score=0; lives=3; phase=0;
+  document.getElementById('screen-start').style.display='none';
+  document.getElementById('screen-game').style.display='block';
+  document.getElementById('screen-end').style.display='none';
+  setPhase(0);
+  startAmbient(0);
+  renderQ();
+}
+
+function renderQ() {
+  if(qIdx >= questions.length) { showEnd(true); return; }
+  busy = false;
+  const q = questions[qIdx];
+
+  // Phase transition
+  if(qIdx === 2) setPhase(1);
+  if(qIdx === 5) setPhase(2);
+
+  // Update header flavor
+  updateHeaderFlavor(q.phase);
+
+  // Q label
+  document.getElementById('qLabel').textContent =
+    (q.phase===2 ? '[ DATA CORRUPT ] — ' : 'Pernyataan Kandidat — ') +
+    String(qIdx+1).padStart(2,'0') + ' / 08';
+
+  // Typewriter
+  const el = document.getElementById('qText');
+  el.setAttribute('data-text', q.statement);
+  typewrite(el, q.statement, q.phase===2 ? 35 : 22);
+
+  // Choices
+  const ce = document.getElementById('choicesEl');
+  ce.innerHTML='';
+  [{letter:'A', c:q.a},{letter:'B', c:q.b}].forEach(({letter,c})=>{
+    const btn = document.createElement('button');
+    btn.className='choice';
+    btn.innerHTML=`<span class="choice-letter">${letter}.</span> ${c.text}`;
+    btn.onclick=()=>answer(c, btn, q);
+    ce.appendChild(btn);
+  });
+
+  document.getElementById('feedback').textContent='Nilai pernyataan kandidat dengan bijak.';
+  document.getElementById('hudScore').textContent='SKOR: '+score;
+  document.getElementById('progressFill').style.width = (qIdx/questions.length*100)+'%';
+  updateLives();
+}
+
+function updateHeaderFlavor(p) {
+  const company = document.getElementById('companyName');
+  const doc = document.getElementById('docTitle');
+  const cname = document.getElementById('candidateName');
+  if(p===0) {
+    company.textContent='PT Dimbud Mencari Cinta Sejati Tbk';
+    doc.textContent='Formulir Penilaian Interview — Rahasia';
+    cname.textContent='Ahmad Yeager';
+  } else if(p===1) {
+    company.textContent='PT D̷i̴m̷b̴u̷d̴ M̷e̴n̷c̴a̷r̴i̷ C̴i̷n̴t̷a̴';
+    doc.textContent='[ AKSES DIBATASI ] — File Kandidat';
+    cname.textContent='Ahmad Yeager ???';
+  } else {
+    company.textContent='[REDACTED]';
+    doc.textContent='JANGAN BACA INI';
+    cname.textContent='D̷̡̲͈̣̻͎̺͖͍͚̺̜̽́̊̉̊̀̉I̵͕̲̠̤̣̯̘̫͔̝̖̳͉͍͑̿̌̈̒̐̇͆̒̕͠A';
+  }
+}
+
+function typewrite(el, text, speed=22) {
+  el.innerHTML='';
+  let i=0;
+  function next() {
+    if(i<text.length) {
+      el.innerHTML = text.slice(0,i+1) + '<span class="cursor-type">|</span>';
+      i++;
+      // Phase 2: random slow/speed
+      let s = speed;
+      if(phase===1) s = speed + (Math.random()>0.8 ? 150 : 0);
+      if(phase===2) s = speed + (Math.random()>0.6 ? 300 : 0);
+      setTimeout(next, s);
+    } else {
+      el.innerHTML = text;
+    }
+  }
+  next();
+}
+
+function answer(choice, btn, q) {
+  if(busy) return;
+  busy = true;
+  document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
+
+  if(choice.correct) {
+    playCorrect();
+    btn.classList.add('correct');
+    score += 100;
+    document.getElementById('feedback').style.color='#27ae60';
+    document.getElementById('feedback').textContent='✓  '+q.ok;
+    setTimeout(()=>{
+      qIdx++;
+      renderQ();
+    }, 1800);
+  } else {
+    playWrong();
+    btn.classList.add('wrong');
+    lives--;
+    document.getElementById('feedback').style.color='var(--red)';
+    document.getElementById('feedback').textContent='✗  '+q.bad;
+    updateLives();
+    if(lives<=0) {
+      setTimeout(()=>triggerJumpscare(q.js, true), 800);
+    } else {
+      setTimeout(()=>triggerMiniScare(q.js.face, q.js.text, q.js.sub, 2000, ()=>{
+        qIdx++;
+        renderQ();
+      }), 800);
+    }
+  }
+}
+
+function updateLives() {
+  const dots = document.querySelectorAll('.hd');
+  dots.forEach((d,i)=>d.classList.toggle('lost', i>=lives));
+}
+
+// Helper: set face — support emoji atau URL foto
+function setJsFace(face) {
+  const el = document.getElementById('jsFace');
+  // Deteksi apakah ini URL/path gambar
+  const isImage = face && (
+    face.startsWith('http') ||
+    face.startsWith('./') ||
+    face.startsWith('/') ||
+    /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(face)
+  );
+  if(isImage) {
+    el.innerHTML = '';
+    el.style.fontSize = '0';
+    const img = document.createElement('img');
+    img.src = face;
+    img.alt = 'jumpscare';
+    // Glitch effect: random tiny offset setiap frame
+    img.style.imageRendering = 'auto';
+    el.appendChild(img);
+  } else {
+    el.innerHTML = face;
+    el.style.fontSize = '';
+  }
+}
+
+// Full game-over jumpscare
+function triggerJumpscare(js, gameOver) {
+  playJumpscare();
+  const js_el = document.getElementById('screen-jumpscare');
+  setJsFace(js.face);
+  document.getElementById('jsText').textContent = js.text;
+  document.getElementById('jsSub').textContent = js.sub;
+
+  // Flash red
+  const fl = document.getElementById('flash');
+  fl.style.opacity='0.9';
+  setTimeout(()=>fl.style.opacity='0',150);
+  setTimeout(()=>{fl.style.opacity='0.6';}, 200);
+  setTimeout(()=>fl.style.opacity='0',350);
+
+  js_el.classList.add('active');
+  // Violent screen shake
+  document.body.classList.add('shaking');
+  setTimeout(()=>document.body.classList.remove('shaking'),600);
+
+  const dur = gameOver ? 3000 : 2200;
+  setTimeout(()=>{
+    js_el.classList.remove('active');
+    if(gameOver) showEnd(false);
+    else { qIdx++; renderQ(); }
+  }, dur);
+}
+
+// Mini scare (lives lost, not game over)
+function triggerMiniScare(face, text, sub, dur, cb) {
+  playWrong();
+  const js_el = document.getElementById('screen-jumpscare');
+  setJsFace(face);
+  document.getElementById('jsText').textContent = text;
+  document.getElementById('jsSub').textContent = sub;
+
+  const fl = document.getElementById('flash');
+  fl.style.opacity='0.7';
+  setTimeout(()=>fl.style.opacity='0', 120);
+
+  js_el.classList.add('active');
+  setTimeout(()=>{
+    js_el.classList.remove('active');
+    if(cb) cb();
+  }, dur);
+}
+
+function showEnd(win) {
+  document.getElementById('screen-game').style.display='none';
+  document.getElementById('screen-end').style.display='block';
+
+  // Clear ambient
+  if(ambientLoop) clearTimeout(ambientLoop);
+  if(staticFlashInterval) clearInterval(staticFlashInterval);
+  if(hbInterval) clearInterval(hbInterval);
+
+  const stamp = document.getElementById('endStamp');
+  const sub = document.getElementById('endSub');
+  document.getElementById('endScoreNum').textContent = score;
+
+  if(win) {
+    stamp.textContent = score>=700 ? 'DITERIMA' : score>=400 ? 'DIPERTIMBANGKAN' : 'DITOLAK';
+    stamp.style.borderColor = score>=700 ? '#27ae60' : score>=400 ? '#c9a84c' : 'var(--red)';
+    stamp.style.color = score>=700 ? '#27ae60' : score>=400 ? '#c9a84c' : 'var(--red)';
+    sub.textContent = score>=700
+      ? 'Anda berhasil melewati semua pertanyaan. Ahmad Yeager menerima keputusan Anda... untuk sekarang.'
+      : score>=400
+      ? 'Cukup. Tapi Ahmad Yeager tidak akan melupakan jawaban-jawaban yang salah tadi.'
+      : 'Anda selesaikan interview ini, tapi dengan banyak kesalahan. Dia sudah mencatat nama Anda.';
+    // Exit fullscreen gently
+    if(document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+  } else {
+    stamp.textContent = 'GAME OVER';
+    stamp.style.borderColor='var(--red)';
+    stamp.style.color='var(--red)';
+    sub.textContent='Nyawa habis. Ahmad Yeager meninggalkan ruangan tanpa berkata apa-apa.\n\nTapi Anda merasa dia masih ada di sini.';
+    if(document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+  }
+
+  // Restore clean look
+  document.body.classList.remove('phase1','phase2','phase3');
+  document.getElementById('scanlines').style.opacity='0';
+  document.getElementById('cracks').style.opacity='0';
+  document.getElementById('blood').style.opacity='0';
+  document.getElementById('qText').classList.remove('active');
+}
+
+function restartGame() {
+  phase=0; qIdx=0; score=0; lives=3;
+  staticFlashInterval=null; hbInterval=null;
+  document.getElementById('screen-end').style.display='none';
+  document.getElementById('screen-start').style.display='block';
+  document.getElementById('screen-game').style.display='none';
+  document.getElementById('mainCard').style.background='';
+  document.getElementById('vignette').style.background='';
+  document.body.className='';
+  document.getElementById('blood').style.opacity='0';
+  document.querySelectorAll('.drip').forEach(d=>d.style.height='0px');
+  gameStarted=false;
+}
+</script>
+</body>
+</html>
