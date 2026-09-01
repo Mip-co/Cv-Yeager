@@ -211,7 +211,7 @@ create policy "Public can view receipts"
 
 | Field           | Lokasi                              |
 | --------------- | ----------------------------------- |
-| **Project URL** | Settings → Integrations → Data API  |
+| **Project URL** | Settings → Integrations → Data API (hapus /rest/v1/ di akhir  |
 | **Anon Key**    | Settings → API Keys → `anon public` |
 
 > ⚠️ Jangan menggunakan `service_role` key di frontend.
