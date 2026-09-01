@@ -1,64 +1,119 @@
 # 💰 DuTrack
 
-> Aplikasi pembukuan keuangan beasiswa — catat pengeluaran, scan struk dengan AI, dan generate laporan LPJ otomatis per semester.
+> Aplikasi pembukuan keuangan beasiswa untuk mencatat transaksi, memantau penggunaan dana, scan struk, dan membuat laporan LPJ otomatis berdasarkan semester akademik.
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-dutrack.vercel.app-7C6AF5?style=for-the-badge)](https://dutrack.vercel.app)
-[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel)](https://vercel.com)
-[![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com)
-[![Gemini](https://img.shields.io/badge/AI-Gemini_3.1_Flash_Lite-4285F4?style=for-the-badge&logo=google)](https://aistudio.google.com)
+[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge\&logo=vercel)](https://vercel.com)
+[![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=for-the-badge\&logo=supabase)](https://supabase.com)
+[![Gemini](https://img.shields.io/badge/AI-Gemini-4285F4?style=for-the-badge\&logo=google)](https://aistudio.google.com)
 
 ---
 
 ## ✨ Fitur
 
-| Fitur | Deskripsi |
-|---|---|
-| 📊 **Dashboard Bento** | Scholarship monitoring, saldo, tren keuangan, kategori |
-| 💸 **Transaksi** | Tambah, edit, hapus, filter, search, pagination |
-| 🤖 **Scan Struk AI** | Gemini Vision untuk ekstrak nominal, tanggal & kategori otomatis |
-| 📷 **Scan Struk OCR** | Fallback Tesseract.js jika tanpa Gemini API Key |
-| ☁️ **Cloud Sync** | Sinkronisasi data antar device via Supabase |
-| 📅 **Filter Semester** | Semua halaman & export terfilter per semester akademik |
-| 📋 **Export LPJ Beasiswa** | Generate XLSX siap submit per semester otomatis |
-| 📄 **Export PDF** | Laporan lengkap dengan tabel & ringkasan |
-| 🌙 **Dark / Light Mode** | Toggle tema sesuai preferensi |
-| 🔒 **Mode Lokal** | Gunakan tanpa akun, data tersimpan di browser |
+| Fitur                       | Deskripsi                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------------ |
+| 📊 **Dashboard Bento**      | Monitoring dana beasiswa, saldo, pemasukan, pengeluaran, tren keuangan, dan kategori |
+| 💸 **Manajemen Transaksi**  | Tambah, edit, hapus, pencarian, filter kategori/tipe, dan pagination                 |
+| 📅 **Filter Semester**      | Memisahkan transaksi berdasarkan rentang semester akademik                           |
+| 📈 **Analitik Semester**    | Grafik dan ringkasan keuangan otomatis mengikuti semester yang dipilih               |
+| 🤖 **Scan Struk AI**        | Ekstraksi nominal, tanggal, keterangan, dan kategori dari foto struk                 |
+| 📷 **OCR Tesseract.js**     | OCR alternatif untuk membaca struk langsung di browser                               |
+| ☁️ **Cloud Sync**           | Sinkronisasi transaksi antar perangkat melalui Supabase                              |
+| 📋 **Export LPJ Beasiswa**  | Generate file XLSX LPJ berdasarkan semester aktif                                    |
+| 📄 **Export PDF**           | Generate laporan keuangan lengkap dalam format PDF                                   |
+| 🌙 **Dark / Light Mode**    | Pilihan tema gelap dan terang                                                        |
+| 📱 **Responsive Mobile UI** | Layout, navigasi, dashboard, dan kontrol dioptimalkan untuk smartphone               |
+| 🔒 **Mode Lokal**           | Gunakan aplikasi tanpa akun dengan penyimpanan `localStorage`                        |
+| 📲 **PWA Support**          | Manifest dan icon agar aplikasi lebih nyaman digunakan di perangkat mobile           |
+
+---
+
+## 📅 Sistem Semester
+
+DuTrack menggunakan **rentang bulan semester** untuk memisahkan data transaksi.
+
+Setiap semester memiliki:
+
+```text
+Nomor Semester
+Label Semester
+Bulan Mulai
+Bulan Selesai
+```
+
+Contoh:
+
+```text
+Semester 4
+Maret 2026 — Agustus 2026
+
+Semester 5
+September 2026 — Februari 2027
+```
+
+Saat semester dipilih dari dropdown, DuTrack hanya menggunakan transaksi yang tanggalnya berada di dalam rentang semester tersebut.
+
+Filter ini digunakan pada:
+
+* Dashboard
+* Daftar transaksi
+* Scholarship Monitoring
+* Analitik
+* Grafik pemasukan & pengeluaran
+* Ringkasan bulanan
+* Export LPJ
+
+Semester terbaru otomatis digunakan sebagai semester aktif apabila belum ada semester lain yang dipilih.
 
 ---
 
 ## 🛠️ Tech Stack
 
-```
+```text
 Frontend   → HTML, CSS, Vanilla JavaScript
 Charts     → Chart.js
-AI OCR     → Gemini 3.1 Flash Lite (Vision API)
-OCR        → Tesseract.js (fallback)
-Auth & DB  → Supabase (PostgreSQL + Row Level Security)
-Storage    → Supabase Storage (foto struk)
+AI / OCR   → Gemini Vision
+OCR        → Tesseract.js
+Auth & DB  → Supabase
+Database   → PostgreSQL
+Security   → Supabase Row Level Security
+Storage    → Supabase Storage
 Export     → SheetJS (xlsx-js-style), jsPDF, html2canvas
-Hosting    → Vercel (auto-deploy dari GitHub)
+Hosting    → Vercel
+PWA        → Web App Manifest
 ```
 
 ---
 
-## 🚀 Setup Supabase
+# 🚀 Setup Supabase
 
-> Setiap pengguna membuat project Supabase sendiri secara gratis.
+> Setiap pengguna dapat menggunakan project Supabase sendiri.
 
-### 1. Buat Akun & Project
+## 1. Buat Project Supabase
 
-1. Buka [supabase.com](https://supabase.com) → login / daftar
-2. Klik **New Project** → isi nama, password database, region **(Singapore)**
-3. Tunggu project selesai dibuat
+1. Buka [supabase.com](https://supabase.com)
+2. Login atau buat akun
+3. Klik **New Project**
+4. Tentukan nama project dan password database
+5. Pilih region terdekat, misalnya **Singapore**
+6. Tunggu proses provisioning selesai
 
 ---
 
-### 2. Buat Tabel Database
+## 2. Buat Tabel Database
 
-Masuk ke **SQL Editor → New Query**, paste SQL berikut lalu klik **Run:**
+Buka:
+
+```text
+SQL Editor → New Query
+```
+
+Kemudian jalankan SQL berikut.
+
+### Transactions
 
 ```sql
--- Tabel transaksi
 create table transactions (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references auth.users(id),
@@ -70,12 +125,18 @@ create table transactions (
   receipt_url text,
   created_at timestamptz default now()
 );
-alter table transactions enable row level security;
-create policy "Users can manage own transactions"
-  on transactions for all
-  using (auth.uid() = user_id);
 
--- Tabel semester
+alter table transactions enable row level security;
+
+create policy "Users can manage own transactions"
+  on transactions
+  for all
+  using (auth.uid() = user_id);
+```
+
+### Semesters
+
+```sql
 create table semesters (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references auth.users(id),
@@ -85,203 +146,482 @@ create table semesters (
   end_month text not null,
   created_at timestamptz default now()
 );
+
 alter table semesters enable row level security;
+
 create policy "Users can manage own semesters"
-  on semesters for all
+  on semesters
+  for all
   using (auth.uid() = user_id);
 ```
 
-Jika berhasil, kedua tabel muncul di **Database → Tables**.
+Jika berhasil, tabel berikut akan muncul:
+
+```text
+Database
+├── transactions
+└── semesters
+```
 
 ---
 
-### 3. Buat Storage Bucket untuk Struk
+## 3. Buat Storage Bucket untuk Struk
 
-Masuk ke **Storage → New Bucket:**
+Buka:
 
-- Nama bucket: `receipts`
-- Public bucket: **ON**
+```text
+Storage → New Bucket
+```
 
-Tambahkan policy di **Storage → Policies → receipts:**
+Gunakan konfigurasi:
+
+```text
+Bucket name   : receipts
+Public bucket : ON
+```
+
+Tambahkan policy berikut.
+
+### Upload
 
 ```sql
--- Upload
 create policy "Users can upload receipts"
-  on storage.objects for insert
+  on storage.objects
+  for insert
   to authenticated
   with check (
-    bucket_id = 'receipts' and
-    auth.uid()::text = (storage.foldername(name))[1]
+    bucket_id = 'receipts'
+    and auth.uid()::text = (storage.foldername(name))[1]
   );
+```
 
--- Read
+### Read
+
+```sql
 create policy "Public can view receipts"
-  on storage.objects for select
+  on storage.objects
+  for select
   to public
   using (bucket_id = 'receipts');
 ```
 
 ---
 
-### 4. Ambil URL & Anon Key
+## 4. Ambil Supabase URL & Anon Key
 
-| Field | Lokasi |
-|---|---|
-| **Project URL** | Settings → Integrations → Data API → API URL *(hapus `/rest/v1/` di akhir)* |
-| **Anon Key** | Settings → API Keys → baris `anon public` |
+| Field           | Lokasi                              |
+| --------------- | ----------------------------------- |
+| **Project URL** | Settings → Integrations → Data API  |
+| **Anon Key**    | Settings → API Keys → `anon public` |
 
-> ⚠️ Jangan gunakan `service_role` key di frontend.
+> ⚠️ Jangan menggunakan `service_role` key di frontend.
 
 ---
 
-### 5. Hubungkan ke DuTrack
+## 5. Hubungkan Supabase ke DuTrack
 
 1. Buka [dutrack.vercel.app](https://dutrack.vercel.app)
-2. Pergi ke **Pengaturan → Konfigurasi Supabase**
-3. Isi **Supabase URL** dan **Anon Key**
-4. Klik **Simpan & Hubungkan**
-5. Muncul ✅ `Koneksi berhasil! Tabel transactions ditemukan.`
+2. Masuk ke **Pengaturan**
+3. Buka **Konfigurasi Supabase**
+4. Isi **Supabase URL**
+5. Isi **Anon Key**
+6. Klik **Simpan & Hubungkan**
 
-> **Catatan:** Tombol "Test Koneksi" kadang menampilkan gagal meski config benar. Gunakan langsung **Simpan & Hubungkan**.
+Jika berhasil:
 
----
-
-### 6. Konfigurasi Auth
-
-**Nonaktifkan konfirmasi email:**
-```
-Authentication → Sign In / Providers → Email → Confirm Email → OFF → Save
-```
-
-**Set Site URL:**
-```
-Authentication → URL Configuration → Site URL → https://dutrack.vercel.app
+```text
+✅ Koneksi berhasil!
 ```
 
 ---
 
-### 7. Register & Login
+## 6. Konfigurasi Authentication
 
-1. Buka app → klik **Daftar**
-2. Isi email & password → **Daftar Sekarang**
-3. Login — data otomatis tersinkronisasi ke cloud ☁️
+Untuk mempermudah penggunaan personal, konfirmasi email dapat dinonaktifkan:
 
----
+```text
+Authentication
+→ Sign In / Providers
+→ Email
+→ Confirm Email
+→ OFF
+```
 
-## 🤖 Setup Gemini AI (Opsional)
+Set juga Site URL:
 
-Gemini AI meningkatkan akurasi scan struk secara signifikan — bisa baca foto buram, miring, dan auto-detect kategori. Tanpa key, OCR tetap berjalan dengan Tesseract.js.
-
-### 1. Dapatkan API Key
-
-1. Buka [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
-2. Login dengan akun Google
-3. Klik **Create API Key** → copy key yang dihasilkan
-
-> API Key Gemini gratis dengan kuota harian yang cukup untuk penggunaan personal.
-
-### 2. Masukkan ke DuTrack
-
-1. Buka **Pengaturan → Konfigurasi Gemini AI**
-2. Paste API Key di field **Gemini API Key**
-3. Klik **Simpan Key**
-4. Muncul ✅ `AI aktif — scan struk menggunakan Gemini`
-
-### 3. Perbandingan Gemini vs Tesseract
-
-| | Gemini AI | Tesseract.js |
-|---|---|---|
-| Akurasi nominal | ✅ Tinggi | ⚠️ Sedang |
-| Auto-detect kategori | ✅ Ya | ❌ Tidak |
-| Auto-isi keterangan | ✅ Nama toko | ❌ Generik |
-| Foto buram/miring | ✅ OK | ❌ Sering gagal |
-| Butuh internet | Ya | Tidak |
+```text
+Authentication
+→ URL Configuration
+→ Site URL
+→ https://dutrack.vercel.app
+```
 
 ---
 
-## 📅 Setup Semester
+## 7. Register & Login
 
-### 1. Tambah Semester
+1. Buka DuTrack
+2. Klik **Daftar**
+3. Masukkan email dan password
+4. Login
+5. Data otomatis disinkronkan dengan Supabase ☁️
 
-1. Buka **Pengaturan → Manajemen Semester**
-2. Isi nomor semester, label, bulan mulai & selesai
-3. Klik **Simpan**
+---
+
+# 🤖 Setup Gemini AI
+
+Gemini dapat digunakan untuk meningkatkan proses pembacaan struk sehingga aplikasi dapat memahami data dari gambar secara lebih fleksibel.
+
+## 1. Buat API Key
+
+Buka:
+
+[Google AI Studio](https://aistudio.google.com/apikey)
+
+Kemudian:
+
+```text
+Create API Key
+→ Copy API Key
+```
+
+---
+
+## 2. Hubungkan ke DuTrack
+
+Buka:
+
+```text
+Pengaturan
+→ Konfigurasi Gemini AI
+```
+
+Masukkan API Key kemudian simpan.
+
+API Key disimpan pada browser pengguna melalui `localStorage`.
+
+---
+
+## 🤖 Gemini vs OCR Lokal
+
+| Kemampuan               |          Gemini | Tesseract.js |
+| ----------------------- | --------------: | -----------: |
+| Membaca nominal         |               ✅ |            ✅ |
+| Membaca tanggal         |               ✅ |            ✅ |
+| Memahami nama toko      |               ✅ |           ⚠️ |
+| Menentukan kategori     |               ✅ |            ❌ |
+| Foto kurang rapi        | ✅ Lebih toleran |           ⚠️ |
+| Berjalan tanpa internet |               ❌ |            ✅ |
+| Membutuhkan API Key     |               ✅ |            ❌ |
+
+---
+
+# 📅 Setup Semester
+
+## 1. Tambah Semester
+
+Masuk ke:
+
+```text
+Pengaturan
+→ Manajemen Semester
+```
+
+Isi:
+
+```text
+Nomor Semester
+Label
+Bulan Mulai
+Bulan Selesai
+```
 
 Contoh:
-- Semester 4: Mar 2026 – Agu 2026
-- Semester 5: Sep 2026 – Feb 2027
 
-### 2. Pilih Semester Aktif
+```text
+Semester 4
+Mar 2026 → Agu 2026
+```
 
-Pilih semester di dropdown topbar — semua halaman (dashboard, transaksi, analitik, export LPJ) otomatis terfilter ke rentang bulan semester tersebut.
+```text
+Semester 5
+Sep 2026 → Feb 2027
+```
+
+Kemudian klik **Simpan**.
 
 ---
 
-## 📖 Cara Pakai
+## 2. Pilih Semester Aktif
 
-### ⌨️ Shortcut
+Gunakan dropdown semester pada bagian atas aplikasi.
 
-| Shortcut | Aksi |
-|---|---|
-| `Ctrl+K` / `Cmd+K` | Buka modal tambah transaksi cepat |
+Misalnya:
 
-### 🤖 Scan Struk dengan AI
+```text
+Semester 5 ▼
+```
+
+Setelah semester diganti, seluruh data pada aplikasi otomatis mengikuti semester tersebut.
+
+Artinya data **Semester 4 tidak akan tercampur dengan Semester 5** pada dashboard, analitik, maupun laporan LPJ.
+
+---
+
+# 📖 Cara Pakai
+
+## 💸 Tambah Transaksi
+
+Klik:
+
+```text
++ Transaksi
+```
+
+Isi:
+
+```text
+Tipe
+Nominal
+Keterangan
+Kategori
+Tanggal
+```
+
+Kemudian klik **Simpan**.
+
+---
+
+## ⌨️ Shortcut
+
+| Shortcut   | Aksi                        |
+| ---------- | --------------------------- |
+| `Ctrl + K` | Tambah transaksi            |
+| `Cmd + K`  | Tambah transaksi pada macOS |
+
+---
+
+# 🤖 Scan Struk
 
 1. Buka halaman **Scan Struk**
-2. Upload / drag & drop foto struk
-3. Jika Gemini aktif → AI ekstrak nominal, tanggal, keterangan & kategori otomatis
-4. Periksa data, edit jika perlu
-5. Klik **Simpan Transaksi**
+2. Upload atau drag & drop foto struk
+3. Sistem membaca isi gambar
+4. Nominal, tanggal, keterangan, dan data lainnya akan diisi otomatis
+5. Periksa hasil scan
+6. Edit jika diperlukan
+7. Klik **Simpan Transaksi**
 
-> Tips: foto terang, teks jelas, tidak blur, posisi lurus — meski Gemini bisa handle foto yang kurang sempurna.
+Tips:
 
-### 📋 Export LPJ Beasiswa
-
-1. Pilih semester di dropdown topbar
-2. Klik **Export → LPJ Beasiswa**
-3. Isi dana beasiswa *(default Rp 8.400.000)*
-4. Paste link bukti (GDrive / PDF) — opsional
-5. Klik **Generate XLSX**
-
-File hasil export berisi **3 sheet:**
-
-| Sheet | Isi |
-|---|---|
-| 📊 Dashboard | KPI dana, tabel per kategori, ringkasan per bulan |
-| 📂 Detail Transaksi | Semua transaksi per kategori + keterangan + link struk |
-| 📋 LPJ | Tabel LPJ format beasiswa, kolom bukti ter-merge + link |
-
-> **Catatan Windows:** File XLSX yang didownload dari browser mungkin diblokir Windows. Klik kanan file → Properties → centang **Unblock** → OK. Atau buka langsung dari Excel via File → Open.
-
-### 🗂️ Mode Lokal
-
-Pilih **"Lanjut tanpa akun"** di halaman login.
-Data tersimpan di `localStorage` — tidak sinkron ke cloud, bisa hilang jika cache dihapus.
+> Gunakan foto dengan pencahayaan baik, tulisan jelas, dan posisi struk tidak terlalu miring agar hasil pembacaan lebih akurat.
 
 ---
 
-## ⚙️ Catatan Teknis
+# 📋 Export LPJ Beasiswa
 
-- `script.js` harus di-load **setelah** semua library (xlsx, jsPDF, html2canvas) di akhir `</body>` — bukan di `<head>`
-- Gunakan **Chrome** untuk hasil terbaik; Edge/Firefox dengan Tracking Prevention aktif bisa mengganggu localStorage dan Supabase client
-- Warning `Multiple GoTrueClient instances` di console adalah non-fatal, tidak mempengaruhi fungsi app
-- Project Supabase **otomatis pause** setelah 7 hari tidak ada aktivitas — resume manual lewat dashboard
-- Gemini API Key tersimpan di `localStorage` browser — tidak dikirim ke server manapun selain Google AI API
+Export LPJ menggunakan **semester yang sedang aktif**.
 
----
+## Cara Export
 
-## 📦 Struktur File
+1. Pilih semester pada dropdown
+2. Klik **Export**
+3. Pilih **LPJ Beasiswa**
+4. Masukkan nominal dana beasiswa
+5. Masukkan link bukti jika diperlukan
+6. Klik **Generate XLSX**
 
+Default dana beasiswa:
+
+```text
+Rp 8.400.000
 ```
+
+---
+
+## 📊 Isi File LPJ
+
+File XLSX terdiri dari **3 sheet**.
+
+| Sheet                   | Isi                                                        |
+| ----------------------- | ---------------------------------------------------------- |
+| 📊 **Dashboard**        | KPI dana, penggunaan dana, kategori, dan ringkasan bulanan |
+| 📂 **Detail Transaksi** | Seluruh transaksi pada semester aktif                      |
+| 📋 **LPJ**              | Format laporan pertanggungjawaban beasiswa                 |
+
+Karena export mengikuti semester aktif:
+
+```text
+Semester 4 → hanya transaksi Semester 4
+Semester 5 → hanya transaksi Semester 5
+```
+
+Data antarsemeseter tidak bercampur.
+
+---
+
+## 🪟 Catatan Windows
+
+File XLSX hasil download browser terkadang diberi proteksi oleh Windows.
+
+Jika Excel menolak file:
+
+```text
+Klik kanan file
+→ Properties
+→ Unblock
+→ Apply
+→ OK
+```
+
+Atau buka melalui:
+
+```text
+Excel
+→ File
+→ Open
+```
+
+---
+
+# 📄 Export PDF
+
+DuTrack juga dapat membuat laporan dalam format PDF yang berisi ringkasan keuangan dan transaksi sesuai data yang sedang ditampilkan.
+
+---
+
+# 🔒 Mode Lokal
+
+DuTrack tetap dapat digunakan tanpa akun.
+
+Pada halaman login pilih:
+
+```text
+Lanjut tanpa akun
+```
+
+Data akan disimpan menggunakan:
+
+```text
+localStorage
+```
+
+Mode ini tidak melakukan sinkronisasi ke Supabase.
+
+> ⚠️ Data dapat hilang apabila browser cache/site data dihapus.
+
+---
+
+# 📱 Responsive Mobile
+
+DuTrack dirancang agar dapat digunakan baik melalui desktop maupun smartphone.
+
+Versi mobile memiliki penyesuaian pada:
+
+* Sidebar dan navigasi
+* Topbar
+* Dropdown semester
+* Tombol transaksi dan export
+* Bento dashboard
+* Daftar transaksi
+* Grafik analitik
+* Modal
+* Account panel
+* Layout dan spacing
+
+Sehingga pencatatan pengeluaran maupun scan struk dapat dilakukan langsung dari HP.
+
+---
+
+# 🌙 Dark & Light Mode
+
+Tema dapat diganti melalui menu:
+
+```text
+Mode Terang / Mode Gelap
+```
+
+Pilihan tampilan disesuaikan menggunakan CSS variables sehingga seluruh komponen mengikuti tema aktif.
+
+---
+
+# ⚙️ Catatan Teknis
+
+* DuTrack menggunakan **Vanilla JavaScript** tanpa framework frontend.
+* `script.js` dimuat setelah library pendukung agar fungsi export dan chart tersedia saat aplikasi dijalankan.
+* Supabase digunakan untuk authentication, database, dan cloud storage.
+* Row Level Security membatasi data berdasarkan akun pengguna.
+* Filter semester dilakukan menggunakan rentang `start_month` dan `end_month`.
+* Dashboard dan analitik menggunakan data hasil filter semester aktif.
+* Mode lokal menggunakan `localStorage`.
+* Gemini API Key disimpan di browser pengguna.
+* Chrome direkomendasikan untuk kompatibilitas terbaik.
+* Project Supabase Free dapat pause setelah tidak aktif dalam periode tertentu dan perlu di-resume melalui dashboard Supabase.
+
+---
+
+# 📦 Struktur Project
+
+```text
 DuTrack/
-├── index.html          # App utama (single-file)
-├── script.js           # Semua logika & fungsi
-├── style.css           # Styling & tema
-├── icon.png            # App icon
-└── README.md           # Dokumentasi ini
+├── index.html
+├── script.js
+├── style.css
+├── manifest.json
+├── icon.png
+└── README.md
 ```
+
+### `index.html`
+
+Struktur halaman aplikasi, dashboard, transaksi, analitik, scanner, pengaturan, modal, dan navigasi.
+
+### `script.js`
+
+Menangani:
+
+```text
+Authentication
+Supabase Sync
+Transaction CRUD
+Semester Management
+Semester Filtering
+Charts & Analytics
+OCR / AI Scan
+Export XLSX
+Export PDF
+Theme
+Navigation
+Local Storage
+```
+
+### `style.css`
+
+Berisi styling:
+
+```text
+Dark / Light Theme
+Bento Dashboard
+Desktop Layout
+Responsive Mobile
+Sidebar
+Topbar
+Transaction List
+Charts
+Modal
+Scanner
+Settings
+```
+
+### `manifest.json`
+
+Konfigurasi Web App Manifest untuk pengalaman penggunaan aplikasi di perangkat mobile.
 
 ---
 
-*Made with ☕ for beasiswa reporting · Deployed on [Vercel](https://vercel.com) · Backend by [Supabase](https://supabase.com) · AI by [Gemini](https://aistudio.google.com)*
-ENDOFFILE
+## 🌐 Live Demo
+
+**[dutrack.vercel.app](https://dutrack.vercel.app)**
+
+---
+
+*Made with ☕ for scholarship finance tracking · Deployed on [Vercel](https://vercel.com) · Backend by [Supabase](https://supabase.com) · AI powered by [Gemini](https://aistudio.google.com)*
